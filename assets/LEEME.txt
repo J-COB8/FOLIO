@@ -1,0 +1,4 @@
+Pon aqui tus archivos:
+- hero.mp4  (el video del hero)
+- fotos del prototipo (jpg/png)
+- folio.glb (modelo 3D, opcional)
