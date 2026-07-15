@@ -3,28 +3,379 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>página web</title>
+  <title>FOLIO — proyecto en desarrollo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@700;800;900&family=Hanken+Grotesk:wght@500;600;700;800&family=Permanent+Marker&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      background: #FFFFFF;
-      color: #111111;
-      font-family: 'Archivo Black', system-ui, sans-serif;
-      display: flex; align-items: center; justify-content: center;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --studio:   #F5F5F2;  /* fondo de estudio, como los renders */
+      --panel:    #FFFFFF;
+      --ink:      #161616;
+      --amarillo: #F9CF39;  /* la hoja amarilla del prototipo */
+      --tape:     #2F7BC0;  /* la cinta azul de la portada */
+      --gris:     #75766F;
+      --max: 1180px;
+      --display: 'Gabarito', system-ui, sans-serif;
+      --body: 'Hanken Grotesk', system-ui, sans-serif;
+      --marker: 'Permanent Marker', cursive;
     }
-    h1 { font-size: clamp(2rem, 8vw, 6rem); font-weight: 400; }
-    .folio {
-      position: fixed; right: 1.5rem; bottom: 1.25rem;
-      font-size: 1.1rem;
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      font-weight: 500;
+      background: var(--studio);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--amarillo); color: var(--ink); }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--tape); outline-offset: 3px; border-radius: 4px;
+    }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 0 6vw; }
+
+    h1, h2, h3 { font-family: var(--display); font-weight: 900; line-height: 1.05; letter-spacing: -0.015em; }
+
+    /* ── cinta adhesiva (la firma de la página) ── */
+    .tape {
+      display: inline-block;
+      font-family: var(--marker);
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      padding: 0.42em 1.2em 0.5em;
+      transform: rotate(-2deg);
+      clip-path: polygon(0 14%, 2.5% 0, 97% 4%, 100% 0, 99% 84%, 96.5% 100%, 3% 96%, 0 100%);
+      box-shadow: 0 2px 8px rgba(22,22,22,0.10);
+    }
+    .tape-azul { background: var(--tape); color: #0E1E33; }
+    .tape-amarilla { background: var(--amarillo); color: var(--ink); }
+    .tape.r { transform: rotate(1.6deg); }
+
+    .marker-note {
+      font-family: var(--marker);
+      font-size: 1rem;
+      color: var(--gris);
+    }
+
+    /* ── NAV ── */
+    header {
+      position: fixed; inset: 0 0 auto 0; z-index: 50;
+      transition: background .3s ease, box-shadow .3s ease;
+    }
+    header.scrolled {
+      background: rgba(245,245,242,0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(22,22,22,0.06);
+    }
+    .nav {
+      max-width: var(--max); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.05rem 6vw;
+    }
+    .logo {
+      font-family: var(--display); font-weight: 900; font-size: 1.4rem;
+      letter-spacing: 0.02em; color: var(--ink); text-decoration: none;
+    }
+    .nav-cta {
+      font-family: var(--display); font-weight: 800; font-size: 0.92rem;
+      background: var(--amarillo); color: var(--ink); text-decoration: none;
+      padding: 0.62rem 1.35rem; border-radius: 999px;
+      transition: transform .18s ease, background .2s ease, color .2s ease;
+    }
+    .nav-cta:hover { background: var(--ink); color: var(--amarillo); transform: translateY(-2px); }
+
+    /* ── HERO: video de estudio ── */
+    #hero { padding: 5.4rem 14px 0; }
+    .hero-frame {
+      position: relative;
+      border-radius: 22px; overflow: hidden;
+      height: min(78vh, 760px); min-height: 420px;
+      background: #E9E9E6;
+    }
+    .hero-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-frame .tape {
+      position: absolute; top: 1.6rem; left: 1.7rem; z-index: 2;
+      font-size: 1.02rem;
+    }
+
+    .hero-copy {
+      max-width: var(--max); margin: 0 auto;
+      padding: 4.2rem 6vw 5.5rem;
+      display: grid; grid-template-columns: 1.35fr 1fr;
+      gap: 3rem; align-items: end;
+    }
+    .hero-copy h1 { font-size: clamp(2.6rem, 6vw, 4.9rem); max-width: 12ch; }
+    .hero-side p {
+      font-size: 1.1rem; font-weight: 600; color: var(--gris);
+      max-width: 38ch; margin-bottom: 1.9rem;
+    }
+    .btn {
+      display: inline-block;
+      font-family: var(--display); font-weight: 800; font-size: 1rem;
+      background: var(--ink); color: var(--studio);
+      text-decoration: none; border: none; cursor: pointer;
+      padding: 0.95rem 1.9rem; border-radius: 999px;
+      transition: transform .18s ease, background .2s ease, color .2s ease;
+    }
+    .btn:hover { background: var(--amarillo); color: var(--ink); transform: translateY(-2px); }
+    .hero-side .marker-note { display: block; margin-top: 0.9rem; }
+
+    /* ── FICHAS: imagen + texto ── */
+    .ficha {
+      max-width: var(--max); margin: 0 auto;
+      padding: 4.6rem 6vw;
+      display: grid; grid-template-columns: 1.02fr 0.98fr;
+      gap: clamp(2.5rem, 5vw, 5rem); align-items: center;
+    }
+    .ficha.flip .ficha-media { order: 2; }
+    .ficha-media {
+      border-radius: 20px; overflow: hidden;
+      background: var(--panel);
+      box-shadow: 0 24px 60px rgba(22,22,22,0.08);
+    }
+    .ficha-media img, .ficha-media video { width: 100%; display: block; }
+    .ficha-media img { aspect-ratio: 4/5; object-fit: cover; }
+    .ficha-media.phone {
+      max-width: 340px; margin: 0 auto;
+      border-radius: 26px;
+    }
+    .ficha-media.phone video { aspect-ratio: 9/16; object-fit: cover; }
+    .ficha-text .tape { margin-bottom: 1.5rem; }
+    .ficha-text h2 { font-size: clamp(1.7rem, 3.4vw, 2.6rem); margin-bottom: 1rem; max-width: 16ch; }
+    .ficha-text p { font-size: 1.05rem; font-weight: 500; color: #3E3F3A; max-width: 46ch; }
+    .ficha-text .marker-note { display: inline-block; margin-top: 1.4rem; }
+
+    .ig-chip {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      margin-top: 1.6rem;
+      font-family: var(--display); font-weight: 800; font-size: 0.95rem;
+      background: var(--panel); color: var(--ink); text-decoration: none;
+      padding: 0.6rem 1.2rem; border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(22,22,22,0.08);
+      transition: transform .18s ease;
+    }
+    .ig-chip:hover { transform: translateY(-2px); }
+
+    /* ── LA HOJA AMARILLA: correo ── */
+    #correo { padding: 6rem 6vw 7rem; display: flex; justify-content: center; }
+    .hoja {
+      position: relative;
+      background: var(--amarillo);
+      color: var(--ink);
+      width: min(620px, 100%);
+      padding: 4rem clamp(1.8rem, 6vw, 4.2rem) 4.4rem;
+      transform: rotate(-1.2deg);
+      border-radius: 6px;
+      box-shadow: 0 30px 70px rgba(120,95,10,0.22);
+    }
+    .hoja::before, .hoja::after {
+      content: "";
+      position: absolute; top: -14px;
+      width: 110px; height: 30px;
+      background: rgba(255,255,255,0.55);
+      clip-path: polygon(0 18%, 3% 0, 97% 6%, 100% 0, 99% 80%, 95% 100%, 4% 94%, 0 100%);
+    }
+    .hoja::before { left: 8%; transform: rotate(-6deg); }
+    .hoja::after { right: 8%; transform: rotate(5deg); }
+    .hoja .marker-note { color: rgba(22,22,22,0.75); font-size: 1.15rem; }
+    .hoja h2 { font-size: clamp(1.9rem, 4.5vw, 2.7rem); margin: 0.5rem 0 0.9rem; }
+    .hoja > p { font-weight: 600; max-width: 40ch; margin-bottom: 2rem; }
+    .hoja-form { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+    .hoja-form input {
+      flex: 1 1 220px;
+      font-family: var(--body); font-weight: 600; font-size: 1rem;
+      color: var(--ink); background: var(--panel);
+      border: none; border-radius: 999px;
+      padding: 0.95rem 1.4rem; outline: none;
+    }
+    .hoja-form input::placeholder { color: #9B9C94; }
+    .hoja-form button {
+      font-family: var(--display); font-weight: 800; font-size: 1rem;
+      background: var(--ink); color: var(--amarillo);
+      border: none; border-radius: 999px; cursor: pointer;
+      padding: 0.95rem 1.8rem;
+      transition: transform .18s ease;
+    }
+    .hoja-form button:hover { transform: translateY(-2px); }
+    .hoja small { display: block; margin-top: 1.1rem; font-weight: 600; color: rgba(22,22,22,0.6); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.6rem 6vw 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.2rem; flex-wrap: wrap;
+      max-width: var(--max); margin: 0 auto;
+    }
+    footer .logo { font-size: 1.15rem; }
+    footer p { font-size: 0.85rem; font-weight: 600; color: var(--gris); }
+    footer a { color: var(--ink); text-decoration: none; font-weight: 700; }
+    footer a:hover { color: var(--tape); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1); }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .hero-copy { grid-template-columns: 1fr; gap: 1.8rem; padding-top: 3rem; padding-bottom: 4rem; }
+      .ficha { grid-template-columns: 1fr; gap: 1.9rem; padding-top: 3rem; padding-bottom: 3rem; }
+      .ficha.flip .ficha-media { order: 0; }
+      .hero-frame { height: 62vh; min-height: 340px; }
+      .hero-frame .tape { top: 1.1rem; left: 1.1rem; font-size: 0.9rem; }
+      .hoja { transform: rotate(0deg); }
+      footer { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <h1>página web</h1>
-  <div class="folio">folio</div>
+
+<!-- ── NAV ── -->
+<header id="site-header">
+  <nav class="nav">
+    <a href="#hero" class="logo">FOLIO</a>
+    <a href="#correo" class="nav-cta">Avísame</a>
+  </nav>
+</header>
+
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-frame">
+    <span class="tape tape-azul">prototipo 1 — en desarrollo</span>
+    <video autoplay muted loop playsinline preload="metadata">
+      <source src="assets/hero.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div class="hero-copy">
+    <h1 class="reveal">La carpeta, pensada otra vez.</h1>
+    <div class="hero-side reveal">
+      <p>Folio separa las argollas del giro de las cubiertas: se abre plana, gira por completo y no maltrata tus hojas. Hecha a mano en México.</p>
+      <a href="#correo" class="btn">Déjame tu correo</a>
+      <span class="marker-note">todavía no está a la venta ↓</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── FICHA 1: abierta ── -->
+<section class="ficha">
+  <div class="ficha-media reveal">
+    <img src="assets/proto-abierta.jpg" alt="Folio abierta completamente plana sobre la mesa" />
+  </div>
+  <div class="ficha-text reveal">
+    <span class="tape tape-amarilla">se abre plana</span>
+    <h2>Escribe como en un cuaderno.</h2>
+    <p>Ábrela en cualquier página y se queda plana sobre la mesa, sin sujetarla y sin páginas que se cierran solas.</p>
+  </div>
+</section>
+
+
+<!-- ── FICHA 2: argollas ── -->
+<section class="ficha flip">
+  <div class="ficha-media reveal">
+    <img src="assets/proto-argollas.jpg" alt="Detalle del módulo de argollas de Folio" />
+  </div>
+  <div class="ficha-text reveal">
+    <span class="tape tape-amarilla r">argollas aparte</span>
+    <h2>El metal nunca estorba tu mano.</h2>
+    <p>Las argollas viven en su propio módulo, separado del giro de las cubiertas. Tu muñeca recorre toda la hoja y tus documentos no se doblan ni se rasgan.</p>
+  </div>
+</section>
+
+
+<!-- ── FICHA 3: paneles ── -->
+<section class="ficha">
+  <div class="ficha-media reveal">
+    <img src="assets/proto-paneles.jpg" alt="Los tres paneles articulados de Folio extendidos" />
+  </div>
+  <div class="ficha-text reveal">
+    <span class="tape tape-amarilla">tres paneles</span>
+    <h2>Gira completa, se vuelve compacta.</h2>
+    <p>Tres paneles en cadena le permiten doblarse 360° hacia atrás, para escribir de pie o en espacios pequeños.</p>
+  </div>
+</section>
+
+
+<!-- ── FICHA 4: el mecanismo en video ── -->
+<section class="ficha flip">
+  <div class="ficha-media phone reveal">
+    <video autoplay muted loop playsinline preload="metadata">
+      <source src="assets/detalle.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div class="ficha-text reveal">
+    <span class="tape tape-amarilla r">el mecanismo</span>
+    <h2>Así se mueve.</h2>
+    <p>El mecanismo completo en movimiento: cada bisagra gira libre sin transmitir fuerza a los orificios de tus hojas.</p>
+  </div>
+</section>
+
+
+<!-- ── FICHA 5: la historia ── -->
+<section class="ficha">
+  <div class="ficha-media reveal">
+    <img src="assets/portada.jpg" alt="Portada del primer prototipo de Folio: hoja amarilla con cinta azul que dice prototipo 1" />
+  </div>
+  <div class="ficha-text reveal">
+    <span class="tape tape-azul">la historia</span>
+    <h2>Un prototipo hecho a mano.</h2>
+    <p>Folio nació en Ciudad Acuña, Coahuila. Este es el primer prototipo funcional, construido a mano, con solicitud de modelo de utilidad ante el IMPI.</p>
+    <a class="ig-chip" href="https://instagram.com/folioproject_" target="_blank" rel="noopener">
+      <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+      @folioproject_
+    </a>
+  </div>
+</section>
+
+
+<!-- ── CORREO: la hoja amarilla ── -->
+<section id="correo">
+  <div class="hoja reveal">
+    <span class="marker-note">¿te interesa?</span>
+    <h2>Te avisamos cuando exista.</h2>
+    <p>Folio está en desarrollo y aún no se produce. Déjanos tu correo y te escribimos cuando esté listo.</p>
+    <!-- Crea tu endpoint gratis en https://formspree.io y reemplaza TU_ID_AQUI -->
+    <form class="hoja-form" action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+      <input type="email" name="email" placeholder="tu@correo.com" required />
+      <button type="submit">Avísame</button>
+    </form>
+    <small>Sin spam. Solo cuando haya noticias del proyecto.</small>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="logo">FOLIO</span>
+  <p>Proyecto en desarrollo · Ciudad Acuña, Coahuila · Modelo de utilidad en trámite ante el IMPI</p>
+  <a href="https://instagram.com/folioproject_" target="_blank" rel="noopener">@folioproject_</a>
+</footer>
+
+
+<script>
+  const header = document.getElementById('site-header');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 30);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+</script>
+
 </body>
 </html>
